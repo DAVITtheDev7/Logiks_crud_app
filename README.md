@@ -176,7 +176,7 @@ git clone https://github.com/DAVITtheDev7/Logiks_crud_app
 Navigate to the project folder:
 
 ```bash
-cd <Logiks_crud_app>
+cd Logiks_crud_app
 ```
 
 Install dependencies:
