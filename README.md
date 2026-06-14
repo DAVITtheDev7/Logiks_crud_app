@@ -15,11 +15,12 @@ Implemented required features:
 
 Implemented optional features:
 
-* Create a new object.
-* Fully update an object using PUT.
-* Partially update an object using PATCH.
-* Delete an object.
-* Add dynamic custom data fields when creating or editing an object.
+* Create object request using POST.
+* Full update request using PUT.
+* Partial update request using PATCH.
+* Delete request using DELETE.
+* Dynamic custom data fields when creating or editing an object.
+* Graceful handling of public API limitations.
 
 ## Architecture
 
@@ -105,27 +106,30 @@ The UI communicates with BLoCs, and BLoCs execute domain use cases.
 
 ### Create / Edit Object
 
-* Allows creating a new object.
-* Allows fully updating an existing object.
+* Allows submitting create requests using POST.
+* Allows submitting full update requests using PUT.
 * Supports dynamic key-value data fields.
 * Automatically parses values into basic JSON types such as boolean, number, and string.
 
 ### Partial Update
 
-The app supports PATCH updates.
+The app supports PATCH requests.
 
-For example, quick rename updates only the top-level `name` field without replacing the full object.
+For example, quick rename sends only the top-level `name` field instead of replacing the full object.
 
 ### Delete
 
-Objects created through the API can be deleted from the app.
+The app supports DELETE requests and handles API errors gracefully when mutation is not allowed by the public API.
 
 ## API Limitation
 
-The public `restful-api.dev` API includes predefined seed objects, such as objects with IDs from `1` to `13`.
+The public `restful-api.dev` API is useful for testing CRUD-style HTTP requests, but it does not behave like a persistent production database.
 
-These seed objects are read-only for update and delete operations.
-Trying to update or delete them can return:
+The `GET /objects` endpoint returns predefined seed objects. After creating a new object with `POST`, the API returns the created object in the response, but the created object may not appear in the main `GET /objects` list after refresh.
+
+Also, predefined seed objects, such as objects with IDs from `1` to `13`, are read-only for update and delete operations.
+
+Trying to update or delete these objects can return:
 
 ```text
 405 Method Not Allowed
@@ -139,22 +143,17 @@ The app handles this case and displays a user-friendly message:
 Seed objects are read-only.
 ```
 
-## How to Test Full CRUD
-
-To properly test create, update, patch, and delete:
+## How to Test the App
 
 1. Open the app.
-2. Tap the floating action button to create a new object.
-3. Enter a name and optional custom data fields.
-4. Submit the form.
-5. Open the newly created object.
-6. Test:
+2. View the list of objects returned by the API.
+3. Tap an object to open its details screen.
+4. Use the floating action button to submit a create request.
+5. Use the details screen actions to test quick rename, full edit, and delete behavior.
+6. If the selected object is a seed object, the API may reject update or delete requests with `405 Method Not Allowed`.
+7. The app will show a user-friendly error message instead of failing silently.
 
-   * Quick Rename using PATCH
-   * Full Edit using PUT
-   * Delete
-
-Seed objects should mainly be used for viewing list and details data.
+Seed objects should mainly be used for list and details viewing. Mutation requests are implemented in the app, but the public API may reject or not persist changes depending on the selected object.
 
 ## Getting Started
 
