@@ -231,7 +231,7 @@ lib/
       presentation/
         bloc/
         models/
-        screens/
+        pages/
         widgets/
 ```
 
