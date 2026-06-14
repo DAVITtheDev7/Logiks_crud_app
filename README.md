@@ -1,62 +1,197 @@
 # Logiks Solutions - Flutter CRUD Application
 
-A production-ready Flutter application demonstrating Clean Architecture, predictable state management, and robust error handling. This project was built to interact with the public `restful-api.dev` endpoint.
+A Flutter CRUD application built for the Logiks Solutions technical task.
+The app communicates with the public `restful-api.dev` API and demonstrates a clean project structure, BLoC state management, dependency injection, and user-friendly error handling.
 
-## Architecture & Design Patterns
+## Task Requirements
 
-This project strictly adheres to **Clean Architecture** principles, dividing the codebase into three decoupled layers to maximize testability, scalability, and maintainability:
+The application implements the required functionality:
 
-* **Domain Layer (`core/`, `features/objects/domain/`):** The pure Dart core of the application. Contains business entities (`MyObjectEntity`) and Use Cases. It is entirely independent of external packages, APIs, or Flutter UI components.
+* Displays a list of objects from the API.
+* Shows each object's ID and name on the main screen.
+* Opens a details screen when an object is selected.
+* Displays all available information about the selected object.
 
-* **Data Layer (`features/objects/data/`):** Responsible for data retrieval and manipulation. It contains the Repository implementations, Remote Data Sources, and Data Models (`MyObjectModel`) for JSON serialization.
+The optional functionality is also implemented:
 
-* **Presentation Layer (`features/objects/presentation/`):** Manages user interaction and state transformations utilizing the **BLoC (Business Logic Component)** pattern. UI logic is fully decoupled from design views via modularized, reusable widgets.
+* Create a new object.
+* Fully edit an object using PUT.
+* Partially update an object using PATCH.
+* Delete an object.
+* Add or remove dynamic custom data fields.
 
-### Core Tech Stack
+## Architecture
 
-* **State Management:** `flutter_bloc` (Unidirectional data flow, reactive UI updates)
-* **Dependency Injection:** `get_it` (Service locator pattern centralized in `core/di/`)
-* **Network Client:** `dio` (Configured with custom interceptors for structured request/response logging)
-* **Testing:** `flutter_test`, `bloc_test`, `mocktail` (Zero code-generation mocking)
+The project follows a Clean Architecture-inspired structure, separated into three main layers:
 
-## Key Features
+### Domain Layer
 
-* **Full CRUD Functionality:** Create, Read, Update (Full PUT & Quick PATCH), and Delete objects.
-* **Dynamic Form Builder:** When creating or editing an object, users can dynamically add or remove custom Key/Value data fields, which are automatically parsed into typed JSON.
-* **Optimistic UI & Smart Refreshes:** The app utilizes `RefreshIndicator` for pull-to-refresh on the main feed and `BlocListener` to instantly react to successful mutations without unnecessary full-page rebuilds.
-* **Centralized Error Handling:** A dedicated `ErrorParser` translates raw server exceptions into user-friendly UI messages.
+Located in:
+
+```text
+features/objects/domain/
+```
+
+Contains the core business definitions of the feature:
+
+* `MyObjectEntity`
+* Repository contract
+* Use cases for get, create, update, partial update, and delete operations
+
+This layer is independent from Flutter UI and API implementation details.
+
+### Data Layer
+
+Located in:
+
+```text
+features/objects/data/
+```
+
+Responsible for communication with the remote API.
+
+It contains:
+
+* API models
+* Remote datasource contract and implementation
+* Repository implementation
+
+The data layer uses `Dio` for HTTP requests and maps API responses into domain entities.
+
+### Presentation Layer
+
+Located in:
+
+```text
+features/objects/presentation/
+```
+
+Responsible for UI and state management.
+
+It contains:
+
+* Screens
+* Widgets
+* BLoCs
+* Events
+* States
+
+The UI communicates with BLoCs, and BLoCs call domain use cases instead of directly accessing API logic.
+
+## Tech Stack
+
+* **Flutter**
+* **Dart**
+* **flutter_bloc** for state management
+* **get_it** for dependency injection
+* **dio** for networking
+* **equatable** for value comparison
+* **flutter_test**, **bloc_test**, and **mocktail** for testing
+
+## Features
+
+### Main Screen
+
+* Fetches and displays objects from the API.
+* Shows object ID and name.
+* Supports pull-to-refresh.
+* Allows navigation to the details screen.
+
+### Details Screen
+
+* Displays all available object information.
+* Shows dynamic custom data fields when available.
+* Provides actions for editing, quick renaming, and deleting objects.
+
+### Create / Edit Object
+
+* Allows users to create new objects.
+* Allows users to fully update existing objects.
+* Supports dynamic key-value data fields.
+
+### Partial Update
+
+The app supports PATCH updates for selected fields.
+
+For example, quick rename sends only the updated `name` field instead of replacing the full object.
+
+### Delete
+
+Users can delete objects that were created through the API.
+
+## API Limitation
+
+The public `restful-api.dev` API includes predefined seed objects, such as objects with IDs from `1` to `13`.
+
+These seed objects are read-only for update and delete operations.
+Trying to update or delete them may return:
+
+```text
+405 Method Not Allowed
+```
+
+This is expected behavior from the API, not an application bug.
+
+The app handles this case with a user-friendly message:
+
+```text
+Seed objects are read-only. Try editing a created object.
+```
+
+## How to Test Full CRUD
+
+To test create, update, patch, and delete correctly:
+
+1. Open the app.
+2. Tap the floating action button to create a new object.
+3. Add a name and optional custom data fields.
+4. Submit the form.
+5. Open the newly created object.
+6. Test:
+
+   * Quick Rename using PATCH
+   * Full Edit using PUT
+   * Delete
+
+Seed objects from the API should be used mainly for list and details viewing.
 
 ## Getting Started
 
 ### Prerequisites
 
-* Flutter SDK (stable channel)
-* Dart SDK
-* Android Emulator / iOS Simulator, physical device, or Chrome (for web)
+Make sure Flutter is installed:
+
+```bash
+flutter --version
+```
 
 ### Installation
 
-1. Clone the repository:
+Clone the repository:
 
 ```bash
 git clone <your-repo-url>
 ```
 
-2. Navigate to the project directory and fetch dependencies:
+Navigate to the project folder:
+
+```bash
+cd <project-folder>
+```
+
+Install dependencies:
 
 ```bash
 flutter pub get
 ```
 
-3. Run the application:
-
-**For Mobile (Emulator/Physical Device):**
+Run the app:
 
 ```bash
 flutter run
 ```
 
-**For Web (Chrome):**
+Run on Chrome:
 
 ```bash
 flutter run -d chrome
@@ -64,22 +199,43 @@ flutter run -d chrome
 
 ## Testing
 
-This project includes unit tests for the presentation layer to verify state emissions and mock external dependencies.
-
-To execute the test suite, run:
+Run tests with:
 
 ```bash
 flutter test
 ```
 
-## Important Note for Reviewers
+The project includes tests for BLoC behavior and state emissions using mocked dependencies.
 
-**Read-Only Seed Data:** The `restful-api.dev` endpoint reserves objects with IDs `1` through `13` (e.g., Apple and Google devices) as static demonstration seeds. The server intentionally throws a `405 Method Not Allowed` exception if you attempt to `PUT`, `PATCH`, or `DELETE` these specific IDs.
+## Project Structure
 
-### How to Test CRUD Operations
+```text
+lib/
+  core/
+    di/
+    error/
+    network/
 
-1. Tap the **Floating Action Button (+)** on the main list screen.
-2. Create a completely new object (with optional dynamic data fields).
-3. Once your custom object is generated and appears at the top of the list, you can seamlessly test the **Quick Rename (PATCH)**, **Full Edit (PUT)**, and **Delete** functionalities on it.
+  features/
+    objects/
+      data/
+        datasources/
+        models/
+        repositories/
 
-*Note: The application is programmed to explicitly catch the 405 error on seed objects and display a graceful UI warning rather than failing silently.*
+      domain/
+        entities/
+        repositories/
+        usecases/
+
+      presentation/
+        bloc/
+        pages/
+        widgets/
+```
+
+## Notes for Reviewers
+
+This project focuses on clean separation of responsibilities, readable code, and predictable state management.
+
+The app intentionally handles the public API limitation around read-only seed objects and allows full CRUD testing on newly created objects.
