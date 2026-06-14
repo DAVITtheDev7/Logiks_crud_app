@@ -170,7 +170,7 @@ flutter --version
 Clone the repository:
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/DAVITtheDev7/Logiks_crud_app
 ```
 
 Navigate to the project folder:
