@@ -25,6 +25,10 @@ dependencies:
   # Dependency injection
   get_it: ^9.2.1
 
+  # Testing
+  mocktail: ^1.0.5
+  bloc_test: ^10.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
