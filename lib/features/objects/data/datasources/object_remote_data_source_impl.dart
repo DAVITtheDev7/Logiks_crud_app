@@ -52,14 +52,26 @@ class ObjectRemoteDataSourceImpl implements ObjectRemoteDataSource {
 
   // PATCH
   @override
-  Future<MyObjectModel> partiallyUpdateObject(
-    String id,
-    Map<String, dynamic> data,
-  ) async {
+  Future<MyObjectModel> partiallyUpdateObject({
+    required String id,
+    String? name,
+    Map<String, dynamic>? data,
+  }) async {
+    final body = <String, dynamic>{};
+
+    if (name != null) {
+      body['name'] = name;
+    }
+
+    if (data != null) {
+      body['data'] = data;
+    }
+
     final response = await dio.patch(
       ApiEndpoints.objectDetails(id),
-      data: data,
+      data: body,
     );
+
     return MyObjectModel.fromJson(response.data);
   }
 

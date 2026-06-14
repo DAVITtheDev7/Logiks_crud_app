@@ -2,7 +2,7 @@ class ErrorParser {
   static String parse(String rawMessage, {String? contextId}) {
     // Handle the specific read-only seed object error
     if (rawMessage.contains('405') || _isSeedId(contextId)) {
-      return 'Seed objects are read-only. Try editing a created object.';
+      return 'Seed objects are read-only.';
     }
 
     if (rawMessage.toLowerCase().contains('network is unreachable')) {

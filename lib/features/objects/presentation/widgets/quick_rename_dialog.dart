@@ -53,7 +53,7 @@ class _QuickRenameDialogState extends State<QuickRenameDialog> {
             context.read<ObjectActionBloc>().add(
               PartiallyUpdateObjectEvent(
                 id: widget.objectId,
-                data: {'name': _nameController.text},
+                name: _nameController.text.trim(),
               ),
             );
             Navigator.pop(context);

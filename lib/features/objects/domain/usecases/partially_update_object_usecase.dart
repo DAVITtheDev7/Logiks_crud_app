@@ -8,8 +8,9 @@ class PartiallyUpdateObjectUseCase {
 
   Future<MyObjectEntity> call({
     required String id,
-    required Map<String, dynamic> data,
+    String? name,
+    Map<String, dynamic>? data,
   }) {
-    return repository.partiallyUpdateObject(id, data);
+    return repository.partiallyUpdateObject(id: id, name: name, data: data);
   }
 }

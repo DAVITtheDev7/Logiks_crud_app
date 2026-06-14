@@ -21,12 +21,13 @@ class UpdateObjectEvent extends ObjectActionEvent {
 
 class PartiallyUpdateObjectEvent extends ObjectActionEvent {
   final String id;
-  final Map<String, dynamic> data;
+  final String? name;
+  final Map<String, dynamic>? data;
 
-  const PartiallyUpdateObjectEvent({required this.id, required this.data});
+  const PartiallyUpdateObjectEvent({required this.id, this.name, this.data});
 
   @override
-  List<Object?> get props => [id, data];
+  List<Object?> get props => [id, name, data];
 }
 
 class DeleteObjectEvent extends ObjectActionEvent {

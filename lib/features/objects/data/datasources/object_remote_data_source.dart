@@ -18,10 +18,11 @@ abstract class ObjectRemoteDataSource {
   );
 
   // PATCH
-  Future<MyObjectModel> partiallyUpdateObject(
-    String id,
-    Map<String, dynamic> data,
-  );
+  Future<MyObjectModel> partiallyUpdateObject({
+    required String id,
+    String? name,
+    Map<String, dynamic>? data,
+  });
 
   // DELETE
   Future<void> deleteObject(String id);

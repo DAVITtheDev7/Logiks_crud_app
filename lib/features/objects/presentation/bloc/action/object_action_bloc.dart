@@ -48,7 +48,11 @@ class ObjectActionBloc extends Bloc<ObjectActionEvent, ObjectActionState> {
     on<PartiallyUpdateObjectEvent>((event, emit) async {
       emit(ObjectActionLoading());
       try {
-        await partiallyUpdateObjectUseCase(id: event.id, data: event.data);
+        await partiallyUpdateObjectUseCase(
+          id: event.id,
+          name: event.name,
+          data: event.data,
+        );
         emit(const ObjectActionSuccess('Object partially updated!'));
       } catch (e) {
         emit(const ObjectActionError('Failed to partially update object.'));

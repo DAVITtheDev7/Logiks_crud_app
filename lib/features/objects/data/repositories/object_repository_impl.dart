@@ -35,11 +35,16 @@ class ObjectRepositoryImpl implements ObjectRepository {
   }
 
   @override
-  Future<MyObjectEntity> partiallyUpdateObject(
-    String id,
-    Map<String, dynamic> data,
-  ) async {
-    return await remoteDataSource.partiallyUpdateObject(id, data);
+  Future<MyObjectEntity> partiallyUpdateObject({
+    required String id,
+    String? name,
+    Map<String, dynamic>? data,
+  }) async {
+    return remoteDataSource.partiallyUpdateObject(
+      id: id,
+      name: name,
+      data: data,
+    );
   }
 
   @override
